@@ -1,0 +1,60 @@
+{
+  "navbar": {
+    "schoolName": "AMANDOLUWA MAHA VIDYALAYA",
+    "home": "Home",
+    "vision": "Our Vision",
+    "staff": "Staff",
+    "notifications": "Special Notifications",
+    "contact": "Contact Us",
+    "admin": "Admin"
+  },
+  "home": {
+    "title": "Welcome to Our School",
+    "subtitle": "A place where young minds grow with knowledge, discipline, and confidence.",
+    "card1Title": "Academic Excellence",
+    "card1Text": "We are committed to delivering high-quality education and strong academic foundations.",
+    "card2Title": "Discipline & Values",
+    "card2Text": "We nurture respectful, disciplined, and responsible students with strong moral values.",
+    "card3Title": "Student Development",
+    "card3Text": "We encourage creativity, leadership, teamwork, and personal growth in every student."
+  },
+  "vision": {
+    "title": "Our Vision",
+    "text": "Our vision is to build a generation of disciplined, knowledgeable, and responsible students who will contribute positively to society and face the future with confidence.",
+    "missionTitle": "Our Mission",
+    "missionText": "To provide quality education, develop good values, and create a supportive environment where every student can grow academically, socially, and personally.",
+    "valuesTitle": "Our Values",
+    "valuesText": "Discipline, respect, honesty, responsibility, leadership, and a commitment to excellence in all aspects of life."
+  },
+  "staff": {
+    "title": "Our Staff",
+    "subtitle": "Meet the dedicated team guiding and supporting our students.",
+    "loading": "Loading staff...",
+    "empty": "No staff members available.",
+    "email": "Email",
+    "phone": "Phone"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "infoTitle": "School Contact Information",
+    "addressLabel": "Address",
+    "address": "Your School Address, Colombo, Sri Lanka",
+    "phoneLabel": "Phone",
+    "phone": "+94 11 123 4567",
+    "emailLabel": "Email",
+    "email": "school@email.com",
+    "hoursLabel": "Office Hours",
+    "hours": "Monday - Friday, 7:30 AM – 2:00 PM",
+    "formTitle": "Send a Message",
+    "name": "Name",
+    "message": "Message",
+    "send": "Send Message",
+    "success": "Message sent! (You can connect this to backend later)"
+  },
+  "footer": {
+    "schoolText": "A place where students grow with knowledge, discipline, and values for a better future.",
+    "quickLinks": "Quick Links",
+    "contactTitle": "Contact",
+    "rights": "All rights reserved."
+  }
+}
