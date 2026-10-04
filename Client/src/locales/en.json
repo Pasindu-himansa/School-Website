@@ -4,7 +4,7 @@
     "home": "Home",
     "vision": "Our Vision",
     "staff": "Staff",
-    "notifications": "Special Notifications",
+    "notifications": "Notifications",
     "contact": "Contact Us",
     "admin": "Admin"
   },
@@ -32,7 +32,15 @@
     "loading": "Loading staff...",
     "empty": "No staff members available.",
     "email": "Email",
-    "phone": "Phone"
+    "phone": "Phone",
+    "noPhoto": "No photo"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Important announcements and updates for students and parents.",
+    "loading": "Loading notifications...",
+    "empty": "No notifications available.",
+    "special": "Special"
   },
   "contact": {
     "title": "Contact Us",
@@ -49,7 +57,14 @@
     "name": "Name",
     "message": "Message",
     "send": "Send Message",
-    "success": "Message sent! (You can connect this to backend later)"
+    "success": "Thank you! Your message has been sent.",
+    "sending": "Sending...",
+    "error": "Your message couldn't be sent. Please try again."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "The page you are looking for doesn't exist.",
+    "home": "Back to Home"
   },
   "footer": {
     "schoolText": "A place where students grow with knowledge, discipline, and values for a better future.",

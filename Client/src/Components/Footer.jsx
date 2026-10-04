@@ -9,7 +9,7 @@ const Footer = () => {
       <div className="mx-auto max-w-7xl px-6 py-12">
         <div className="grid gap-10 md:grid-cols-3">
           <div>
-            <h3 className="text-xl font-bold">School Website</h3>
+            <h3 className="text-xl font-bold">{t("navbar.schoolName")}</h3>
             <p className="mt-3 text-sm text-gray-300">
               {t("footer.schoolText")}
             </p>
@@ -31,7 +31,7 @@ const Footer = () => {
                 {t("navbar.staff")}
               </Link>
               <Link
-                to="/special-notifications"
+                to="/notifications"
                 className="hover:text-yellow-300"
               >
                 {t("navbar.notifications")}
@@ -56,7 +56,8 @@ const Footer = () => {
         </div>
 
         <div className="mt-10 border-t border-gray-600 pt-6 text-center text-sm text-gray-400">
-          © {new Date().getFullYear()} School Website. {t("footer.rights")}
+          © {new Date().getFullYear()} {t("navbar.schoolName")}.{" "}
+          {t("footer.rights")}
         </div>
       </div>
     </footer>

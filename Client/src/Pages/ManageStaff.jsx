@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
-import API from "../services/api";
+import { useEffect, useRef, useState } from "react";
+import API from "../Services/api";
 
 const ManageStaff = () => {
   const [staff, setStaff] = useState([]);
+  const [reloadKey, setReloadKey] = useState(0);
   const [editingId, setEditingId] = useState(null);
+  const photoInputRef = useRef(null);
 
   const [form, setForm] = useState({
     name_en: "",
@@ -19,18 +21,20 @@ const ManageStaff = () => {
     isActive: true,
   });
 
-  const fetchStaff = async () => {
-    try {
-      const { data } = await API.get("/staff/admin");
-      setStaff(data);
-    } catch (error) {
-      console.log(error);
+  useEffect(() => {
+    API.get("/staff/admin")
+      .then(({ data }) => setStaff(data))
+      .catch((error) => console.log(error));
+  }, [reloadKey]);
+
+  const reloadStaff = () => setReloadKey((key) => key + 1);
+
+  // React doesn't control file inputs, so clear the chosen file by hand
+  const clearPhotoInput = () => {
+    if (photoInputRef.current) {
+      photoInputRef.current.value = "";
     }
   };
-
-  useEffect(() => {
-    fetchStaff();
-  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -57,6 +61,7 @@ const ManageStaff = () => {
       isActive: true,
     });
     setEditingId(null);
+    clearPhotoInput();
   };
 
   const handleSubmit = async (e) => {
@@ -86,7 +91,7 @@ const ManageStaff = () => {
       }
 
       resetForm();
-      fetchStaff();
+      reloadStaff();
     } catch (error) {
       console.log(error);
       alert(error.response?.data?.message || "Operation failed");
@@ -95,6 +100,7 @@ const ManageStaff = () => {
 
   const handleEdit = (member) => {
     setEditingId(member._id);
+    clearPhotoInput();
 
     setForm({
       name_en: member.name?.en || "",
@@ -117,9 +123,10 @@ const ManageStaff = () => {
 
     try {
       await API.delete(`/staff/${id}`);
-      fetchStaff();
+      reloadStaff();
     } catch (error) {
       console.log(error);
+      alert(error.response?.data?.message || "Delete failed");
     }
   };
 
@@ -172,8 +179,10 @@ const ManageStaff = () => {
         />
 
         <input
+          ref={photoInputRef}
           type="file"
           name="photo"
+          accept="image/jpeg,image/png,image/webp"
           onChange={handleChange}
           className="rounded-lg border p-3"
         />

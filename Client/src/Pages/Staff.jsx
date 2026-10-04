@@ -60,7 +60,7 @@ const Staff = () => {
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center text-gray-500">
-                      No Photo
+                      {t("staff.noPhoto")}
                     </div>
                   )}
                 </div>

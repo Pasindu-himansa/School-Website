@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../Services/api";
+import { isLoggedIn, setToken } from "../Services/auth";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -13,8 +14,7 @@ const AdminLogin = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    if (token) {
+    if (isLoggedIn()) {
       navigate("/admin/dashboard");
     }
   }, [navigate]);
@@ -33,7 +33,7 @@ const AdminLogin = () => {
 
     try {
       const { data } = await API.post("/auth/login", form);
-      localStorage.setItem("adminToken", data.token);
+      setToken(data.token);
       navigate("/admin/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");

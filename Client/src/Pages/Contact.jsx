@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import API from "../Services/api";
 
 const Contact = () => {
   const { t } = useTranslation();
@@ -9,6 +10,8 @@ const Contact = () => {
     email: "",
     message: "",
   });
+  const [sending, setSending] = useState(false);
+  const [status, setStatus] = useState(null); // "success" | "error"
 
   const handleChange = (e) => {
     setForm({
@@ -17,10 +20,21 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(t("contact.success"));
-    setForm({ name: "", email: "", message: "" });
+    setSending(true);
+    setStatus(null);
+
+    try {
+      await API.post("/messages", form);
+      setStatus("success");
+      setForm({ name: "", email: "", message: "" });
+    } catch (error) {
+      console.log("Error sending message:", error);
+      setStatus("error");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -67,6 +81,18 @@ const Contact = () => {
             <h2 className="mb-4 text-2xl font-semibold text-blue-900">
               {t("contact.formTitle")}
             </h2>
+
+            {status && (
+              <div
+                className={`mb-5 rounded-lg px-4 py-3 text-sm ${
+                  status === "success"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-700"
+                }`}
+              >
+                {t(`contact.${status}`)}
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
@@ -116,9 +142,10 @@ const Contact = () => {
 
               <button
                 type="submit"
-                className="w-full rounded-lg bg-blue-900 py-2 font-semibold text-white transition hover:bg-blue-800"
+                disabled={sending}
+                className="w-full rounded-lg bg-blue-900 py-2 font-semibold text-white transition hover:bg-blue-800 disabled:opacity-70"
               >
-                {t("contact.send")}
+                {sending ? t("contact.sending") : t("contact.send")}
               </button>
             </form>
           </div>

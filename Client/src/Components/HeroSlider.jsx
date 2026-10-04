@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import API from "../services/api";
+import API from "../Services/api";
 import { useTranslation } from "react-i18next";
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -30,7 +30,7 @@ const HeroSlider = () => {
       modules={[Autoplay, Pagination]}
       autoplay={{ delay: 4000 }}
       pagination={{ clickable: true }}
-      loop={true}
+      loop={slides.length > 1}
       className="h-[500px]"
     >
       {slides.map((slide) => (
@@ -41,12 +41,13 @@ const HeroSlider = () => {
           >
             <div className="bg-black/50 p-10 text-center text-white rounded-xl">
               <h1 className="text-4xl font-bold">
-                {slide.title[i18n.language]}
+                {slide.title?.[i18n.language]}
               </h1>
 
-              <p className="mt-4 text-lg">{slide.subtitle[i18n.language]}</p>
+              <p className="mt-4 text-lg">{slide.subtitle?.[i18n.language]}</p>
 
-              {slide.buttonText && (
+              {/* buttonText is always an object, so check the text itself */}
+              {slide.buttonText?.[i18n.language] && slide.buttonLink && (
                 <a
                   href={slide.buttonLink}
                   className="mt-6 inline-block rounded bg-yellow-400 px-6 py-2 font-semibold text-blue-900"

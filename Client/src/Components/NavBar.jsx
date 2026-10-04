@@ -47,7 +47,7 @@ const Navbar = () => {
             {t("navbar.staff")}
           </Link>
 
-          <Link to="/special-notifications" className="hover:text-yellow-300">
+          <Link to="/notifications" className="hover:text-yellow-300">
             {t("navbar.notifications")}
           </Link>
 
@@ -112,7 +112,7 @@ const Navbar = () => {
           </Link>
 
           <Link
-            to="/special-notifications"
+            to="/notifications"
             className="block"
             onClick={() => setMenuOpen(false)}
           >

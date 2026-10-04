@@ -1,16 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import API from "../Services/api.js";
 
 const ManageHero = () => {
   const [slides, setSlides] = useState([]);
+  const [reloadKey, setReloadKey] = useState(0);
   const [editingId, setEditingId] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const fileInputRef = useRef(null);
 
   const [form, setForm] = useState({
     title_en: "",
     title_si: "",
     subtitle_en: "",
     subtitle_si: "",
-    imageUrl: "",
     buttonText_en: "",
     buttonText_si: "",
     buttonLink: "",
@@ -18,26 +21,45 @@ const ManageHero = () => {
     isActive: true,
   });
 
-  const fetchSlides = async () => {
-    try {
-      const { data } = await API.get("/hero/admin");
-      setSlides(data);
-    } catch (error) {
-      console.log("Error fetching slides:", error);
-    }
-  };
-
   useEffect(() => {
-    fetchSlides();
-  }, []);
+    API.get("/hero/admin")
+      .then(({ data }) => setSlides(data))
+      .catch((error) => console.log("Error fetching slides:", error));
+  }, [reloadKey]);
+
+  const reloadSlides = () => setReloadKey((key) => key + 1);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
     setForm((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  const releasePreview = () => {
+    if (imagePreview.startsWith("blob:")) {
+      URL.revokeObjectURL(imagePreview);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      releasePreview();
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  // React doesn't control file inputs, so clear the chosen file by hand
+  const clearImage = () => {
+    releasePreview();
+    setImageFile(null);
+    setImagePreview("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const resetForm = () => {
@@ -46,7 +68,6 @@ const ManageHero = () => {
       title_si: "",
       subtitle_en: "",
       subtitle_si: "",
-      imageUrl: "",
       buttonText_en: "",
       buttonText_si: "",
       buttonLink: "",
@@ -54,20 +75,37 @@ const ManageHero = () => {
       isActive: true,
     });
     setEditingId(null);
+    clearImage();
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      const formData = new FormData();
+
+      // Append all text fields
+      Object.entries(form).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      // Append image only if a new one was selected
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+
       if (editingId) {
-        await API.put(`/hero/${editingId}`, form);
+        await API.put(`/hero/${editingId}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       } else {
-        await API.post("/hero", form);
+        await API.post("/hero", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       }
 
       resetForm();
-      fetchSlides();
+      reloadSlides();
     } catch (error) {
       console.log("Error saving slide:", error);
       alert(error.response?.data?.message || "Operation failed");
@@ -76,13 +114,14 @@ const ManageHero = () => {
 
   const handleEdit = (slide) => {
     setEditingId(slide._id);
+    clearImage();
+    setImagePreview(slide.imageUrl || "");
 
     setForm({
       title_en: slide.title?.en || "",
       title_si: slide.title?.si || "",
       subtitle_en: slide.subtitle?.en || "",
       subtitle_si: slide.subtitle?.si || "",
-      imageUrl: slide.imageUrl || "",
       buttonText_en: slide.buttonText?.en || "",
       buttonText_si: slide.buttonText?.si || "",
       buttonLink: slide.buttonLink || "",
@@ -97,7 +136,7 @@ const ManageHero = () => {
 
     try {
       await API.delete(`/hero/${id}`);
-      fetchSlides();
+      reloadSlides();
     } catch (error) {
       console.log("Error deleting slide:", error);
       alert(error.response?.data?.message || "Delete failed");
@@ -121,7 +160,6 @@ const ManageHero = () => {
           className="rounded-lg border p-3"
           required
         />
-
         <input
           type="text"
           name="title_si"
@@ -131,7 +169,6 @@ const ManageHero = () => {
           className="rounded-lg border p-3"
           required
         />
-
         <input
           type="text"
           name="subtitle_en"
@@ -140,7 +177,6 @@ const ManageHero = () => {
           onChange={handleChange}
           className="rounded-lg border p-3"
         />
-
         <input
           type="text"
           name="subtitle_si"
@@ -150,15 +186,27 @@ const ManageHero = () => {
           className="rounded-lg border p-3"
         />
 
-        <input
-          type="text"
-          name="imageUrl"
-          placeholder="Image URL"
-          value={form.imageUrl}
-          onChange={handleChange}
-          className="rounded-lg border p-3"
-          required
-        />
+        {/* Image Upload */}
+        <div className="rounded-lg border p-3">
+          <label className="mb-2 block text-sm font-medium text-gray-700">
+            Hero Image {editingId && "(leave empty to keep current image)"}
+          </label>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handleImageChange}
+            className="w-full"
+            required={!editingId}
+          />
+          {imagePreview && (
+            <img
+              src={imagePreview}
+              alt="Preview"
+              className="mt-3 h-40 w-full rounded-lg object-cover"
+            />
+          )}
+        </div>
 
         <input
           type="text"
@@ -168,7 +216,6 @@ const ManageHero = () => {
           onChange={handleChange}
           className="rounded-lg border p-3"
         />
-
         <input
           type="text"
           name="buttonText_si"
@@ -177,7 +224,6 @@ const ManageHero = () => {
           onChange={handleChange}
           className="rounded-lg border p-3"
         />
-
         <input
           type="text"
           name="buttonLink"
@@ -186,7 +232,6 @@ const ManageHero = () => {
           onChange={handleChange}
           className="rounded-lg border p-3"
         />
-
         <input
           type="number"
           name="order"
@@ -209,9 +254,7 @@ const ManageHero = () => {
         </label>
 
         <button
-          className={`rounded-lg py-3 font-semibold text-white ${
-            editingId ? "bg-green-600" : "bg-blue-900"
-          }`}
+          className={`rounded-lg py-3 font-semibold text-white ${editingId ? "bg-green-600" : "bg-blue-900"}`}
         >
           {editingId ? "Update Slide" : "Add Slide"}
         </button>
@@ -243,7 +286,6 @@ const ManageHero = () => {
                   {slide.isActive ? "Active" : "Inactive"}
                 </p>
               </div>
-
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEdit(slide)}
@@ -251,7 +293,6 @@ const ManageHero = () => {
                 >
                   Edit
                 </button>
-
                 <button
                   onClick={() => handleDelete(slide._id)}
                   className="rounded bg-red-500 px-4 py-2 text-white"
@@ -260,7 +301,6 @@ const ManageHero = () => {
                 </button>
               </div>
             </div>
-
             {slide.imageUrl && (
               <img
                 src={slide.imageUrl}

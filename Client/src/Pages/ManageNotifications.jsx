@@ -3,6 +3,7 @@ import API from "../Services/api";
 
 const ManageNotifications = () => {
   const [notifications, setNotifications] = useState([]);
+  const [reloadKey, setReloadKey] = useState(0);
   const [editingId, setEditingId] = useState(null);
 
   const [form, setForm] = useState({
@@ -19,18 +20,13 @@ const ManageNotifications = () => {
     isPublished: true,
   });
 
-  const fetchNotifications = async () => {
-    try {
-      const { data } = await API.get("/notifications/admin/all");
-      setNotifications(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    fetchNotifications();
-  }, []);
+    API.get("/notifications/admin/all")
+      .then(({ data }) => setNotifications(data))
+      .catch((error) => console.log(error));
+  }, [reloadKey]);
+
+  const reloadNotifications = () => setReloadKey((key) => key + 1);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -70,7 +66,7 @@ const ManageNotifications = () => {
       }
 
       resetForm();
-      fetchNotifications();
+      reloadNotifications();
     } catch (error) {
       console.log(error);
       alert(error.response?.data?.message || "Operation failed");
@@ -101,9 +97,10 @@ const ManageNotifications = () => {
 
     try {
       await API.delete(`/notifications/${id}`);
-      fetchNotifications();
+      reloadNotifications();
     } catch (error) {
       console.log(error);
+      alert(error.response?.data?.message || "Delete failed");
     }
   };
 

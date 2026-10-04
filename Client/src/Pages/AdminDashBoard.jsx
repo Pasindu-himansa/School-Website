@@ -3,13 +3,15 @@ import { useNavigate } from "react-router-dom";
 import ManageHero from "./ManageHero";
 import ManageStaff from "./ManageStaff";
 import ManageNotifications from "./ManageNotifications";
+import ManageMessages from "./ManageMessages";
+import { clearToken } from "../Services/auth";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [section, setSection] = useState("dashboard");
 
   const logout = () => {
-    localStorage.removeItem("adminToken");
+    clearToken();
     navigate("/admin/login");
   };
 
@@ -17,6 +19,7 @@ const AdminDashboard = () => {
     if (section === "hero") return <ManageHero />;
     if (section === "staff") return <ManageStaff />;
     if (section === "notifications") return <ManageNotifications />;
+    if (section === "messages") return <ManageMessages />;
 
     return (
       <div>
@@ -83,6 +86,13 @@ const AdminDashboard = () => {
             className="rounded-lg px-4 py-2 text-left hover:bg-blue-800"
           >
             Notifications
+          </button>
+
+          <button
+            onClick={() => setSection("messages")}
+            className="rounded-lg px-4 py-2 text-left hover:bg-blue-800"
+          >
+            Messages
           </button>
 
           <button

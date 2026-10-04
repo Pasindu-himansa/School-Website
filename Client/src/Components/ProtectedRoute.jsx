@@ -1,9 +1,9 @@
 import { Navigate } from "react-router-dom";
+import { isLoggedIn, clearToken } from "../Services/auth";
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem("adminToken");
-
-  if (!token) {
+  if (!isLoggedIn()) {
+    clearToken();
     return <Navigate to="/admin/login" replace />;
   }
 
