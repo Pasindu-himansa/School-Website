@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../Services/api";
+import { Bell, Pencil, Plus, Save, Trash2, X } from "lucide-react";
 
 const ManageNotifications = () => {
   const [notifications, setNotifications] = useState([]);
@@ -106,11 +107,14 @@ const ManageNotifications = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-blue-900">Manage Notifications</h2>
+      <h2 className="flex items-center gap-3 text-2xl font-bold text-maroon-900">
+        <Bell className="h-7 w-7 text-maroon-700" aria-hidden="true" />
+        Manage Notifications
+      </h2>
 
       <form
         onSubmit={handleSubmit}
-        className="mt-6 grid gap-4 rounded-xl bg-white p-6 shadow-md"
+        className="mt-6 grid gap-4 rounded-2xl bg-white p-6 shadow-md ring-1 ring-stone-200/70"
       >
         <input
           type="text"
@@ -118,7 +122,7 @@ const ManageNotifications = () => {
           placeholder="Title (English)"
           value={form.title_en}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
           required
         />
 
@@ -128,7 +132,7 @@ const ManageNotifications = () => {
           placeholder="Title (Sinhala)"
           value={form.title_si}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
           required
         />
 
@@ -138,7 +142,7 @@ const ManageNotifications = () => {
           placeholder="Summary (English)"
           value={form.summary_en}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
         />
 
         <input
@@ -147,7 +151,7 @@ const ManageNotifications = () => {
           placeholder="Summary (Sinhala)"
           value={form.summary_si}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
         />
 
         <input
@@ -156,7 +160,7 @@ const ManageNotifications = () => {
           placeholder="Image URL"
           value={form.imageUrl}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
         />
 
         <input
@@ -165,7 +169,7 @@ const ManageNotifications = () => {
           placeholder="Category (English)"
           value={form.category_en}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
         />
 
         <input
@@ -174,7 +178,7 @@ const ManageNotifications = () => {
           placeholder="Category (Sinhala)"
           value={form.category_si}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
         />
 
         <textarea
@@ -182,7 +186,7 @@ const ManageNotifications = () => {
           placeholder="Content (English)"
           value={form.content_en}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
           rows="5"
           required
         ></textarea>
@@ -192,7 +196,7 @@ const ManageNotifications = () => {
           placeholder="Content (Sinhala)"
           value={form.content_si}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
           rows="5"
           required
         ></textarea>
@@ -218,10 +222,13 @@ const ManageNotifications = () => {
         </label>
 
         <button
-          className={`rounded-lg py-3 font-semibold text-white ${
-            editingId ? "bg-green-600" : "bg-blue-900"
-          }`}
+          className={`inline-flex items-center justify-center gap-2 rounded-xl py-3 font-semibold text-white shadow transition hover:-translate-y-0.5 ${editingId ? "bg-green-700 hover:bg-green-600" : "bg-maroon-800 hover:bg-maroon-700"}`}
         >
+          {editingId ? (
+            <Save className="h-5 w-5" aria-hidden="true" />
+          ) : (
+            <Plus className="h-5 w-5" aria-hidden="true" />
+          )}
           {editingId ? "Update Notification" : "Add Notification"}
         </button>
 
@@ -229,8 +236,9 @@ const ManageNotifications = () => {
           <button
             type="button"
             onClick={resetForm}
-            className="rounded-lg bg-gray-400 py-2 text-white"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-stone-200 py-2.5 font-medium text-stone-700 transition hover:bg-stone-300"
           >
+            <X className="h-4 w-4" aria-hidden="true" />
             Cancel Edit
           </button>
         )}
@@ -238,19 +246,22 @@ const ManageNotifications = () => {
 
       <div className="mt-8 grid gap-4">
         {notifications.map((item) => (
-          <div key={item._id} className="rounded-xl bg-white p-4 shadow">
+          <div
+            key={item._id}
+            className="animate-fade-up rounded-2xl bg-white p-5 shadow-sm ring-1 ring-stone-200/70 transition hover:shadow-md"
+          >
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
-                <h3 className="font-bold text-blue-900">
+                <h3 className="font-bold text-maroon-900">
                   {item.title?.en || "No English title"}
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-stone-600">
                   {item.title?.si || "No Sinhala title"}
                 </p>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="mt-1 text-sm text-stone-500">
                   {item.category?.en || ""} / {item.category?.si || ""}
                 </p>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="mt-1 text-sm text-stone-500">
                   {item.isSpecial ? "Special" : "Normal"} |{" "}
                   {item.isPublished ? "Published" : "Draft"}
                 </p>
@@ -259,15 +270,17 @@ const ManageNotifications = () => {
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEdit(item)}
-                  className="rounded bg-yellow-500 px-4 py-2 text-white"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-gold-300 px-4 py-2 font-medium text-maroon-900 transition hover:bg-gold-200"
                 >
+                  <Pencil className="h-4 w-4" aria-hidden="true" />
                   Edit
                 </button>
 
                 <button
                   onClick={() => handleDelete(item._id)}
-                  className="rounded bg-red-500 px-4 py-2 text-white"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-red-600 px-4 py-2 font-medium text-white transition hover:bg-red-700"
                 >
+                  <Trash2 className="h-4 w-4" aria-hidden="true" />
                   Delete
                 </button>
               </div>

@@ -1,6 +1,8 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Navbar from "./Components/NavBar";
 import Footer from "./Components/Footer";
+import BackToTop from "./Components/BackToTop";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import Home from "./Pages/Home";
 import Contact from "./Pages/Contact";
@@ -12,6 +14,13 @@ import AdminDashboard from "./Pages/AdminDashBoard";
 import NotFound from "./Pages/NotFound";
 
 function App() {
+  const { pathname } = useLocation();
+
+  // a new page should open at the top, not where the last one was scrolled
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [pathname]);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Routes>
@@ -29,7 +38,8 @@ function App() {
           element={
             <>
               <Navbar />
-              <main className="flex-1">
+              {/* key: replay the fade-in on every page change */}
+              <main key={pathname} className="flex-1 animate-fade-in">
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/contact" element={<Contact />} />
@@ -46,6 +56,7 @@ function App() {
                 </Routes>
               </main>
               <Footer />
+              <BackToTop />
             </>
           }
         />

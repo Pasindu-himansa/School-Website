@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Bell, BellOff, CalendarDays, Pin, Tag } from "lucide-react";
 import API from "../Services/api";
+import PageHeader from "../Components/PageHeader";
+import Reveal from "../Components/Reveal";
+import { formatDate, localize } from "../Services/localize";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const { t, i18n } = useTranslation();
+  const lang = i18n.language;
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -23,75 +28,101 @@ const Notifications = () => {
     fetchNotifications();
   }, []);
 
-  const localize = (field) =>
-    typeof field === "object" ? field?.[i18n.language] || field?.en : field;
-
   return (
-    <div className="bg-gray-50 py-16">
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="mb-12 text-center">
-          <h1 className="text-4xl font-bold text-blue-900">
-            {t("notifications.title")}
-          </h1>
-          <p className="mt-4 text-gray-600">{t("notifications.subtitle")}</p>
-        </div>
+    <div>
+      <PageHeader
+        icon={Bell}
+        title={t("notifications.title")}
+        subtitle={t("notifications.subtitle")}
+      />
 
+      <section className="mx-auto max-w-6xl px-6 py-16">
         {loading ? (
-          <div className="text-center text-lg text-gray-600">
-            {t("notifications.loading")}
+          <div
+            className="grid gap-8 md:grid-cols-2"
+            aria-label={t("notifications.loading")}
+          >
+            {[0, 1].map((i) => (
+              <div key={i} className="skeleton h-72" />
+            ))}
           </div>
         ) : notifications.length === 0 ? (
-          <div className="text-center text-lg text-gray-600">
-            {t("notifications.empty")}
+          <div className="flex flex-col items-center py-16 text-center text-stone-500">
+            <BellOff className="h-14 w-14 text-maroon-200" aria-hidden="true" />
+            <p className="mt-4 text-lg">{t("notifications.empty")}</p>
           </div>
         ) : (
           <div className="grid gap-8 md:grid-cols-2">
-            {notifications.map((item) => (
-              <div
-                key={item._id}
-                className={`rounded-2xl bg-white p-6 shadow-md transition hover:shadow-lg ${
-                  item.isSpecial ? "ring-2 ring-red-800" : ""
-                }`}
-              >
-                {item.imageUrl && (
-                  <img
-                    src={item.imageUrl}
-                    alt={localize(item.title)}
-                    className="mb-4 h-56 w-full rounded-xl object-cover"
-                  />
-                )}
+            {notifications.map((item, i) => {
+              const title = localize(item.title, lang);
+              const summary = localize(item.summary, lang);
 
-                <div className="flex flex-wrap gap-2">
-                  {item.isSpecial && (
-                    <span className="inline-block rounded-full bg-red-800 px-3 py-1 text-sm font-medium text-white">
-                      {t("notifications.special")}
-                    </span>
-                  )}
-                  <span className="inline-block rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-700">
-                    {localize(item.category)}
-                  </span>
-                </div>
+              return (
+                <Reveal key={item._id} delay={(i % 2) * 120}>
+                  <article
+                    className={`group relative h-full overflow-hidden rounded-3xl bg-white shadow-lg ring-1 shadow-stone-900/5 transition duration-300 hover:-translate-y-1.5 hover:shadow-2xl ${
+                      item.isSpecial
+                        ? "ring-2 ring-gold-300"
+                        : "ring-stone-200/70"
+                    }`}
+                  >
+                    {item.isSpecial && (
+                      <div className="h-1.5 bg-gradient-to-r from-gold-300 via-gold-400 to-gold-300" />
+                    )}
 
-                <h2 className="mt-4 text-2xl font-bold text-blue-900">
-                  {localize(item.title)}
-                </h2>
+                    {item.imageUrl && (
+                      <div className="overflow-hidden">
+                        <img
+                          src={item.imageUrl}
+                          alt={title}
+                          loading="lazy"
+                          className="h-56 w-full object-cover transition duration-700 group-hover:scale-105"
+                        />
+                      </div>
+                    )}
 
-                {localize(item.summary) && (
-                  <p className="mt-3 text-gray-600">{localize(item.summary)}</p>
-                )}
+                    <div className="p-7">
+                      <div className="flex flex-wrap items-center gap-2">
+                        {item.isSpecial && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-gold-300 px-3 py-1 text-xs font-semibold text-maroon-900">
+                            <Pin className="h-3.5 w-3.5" aria-hidden="true" />
+                            {t("notifications.special")}
+                          </span>
+                        )}
+                        <span className="inline-flex items-center gap-1 rounded-full bg-maroon-50 px-3 py-1 text-xs font-semibold text-maroon-800">
+                          <Tag className="h-3.5 w-3.5" aria-hidden="true" />
+                          {localize(item.category, lang)}
+                        </span>
+                        <span className="ml-auto inline-flex items-center gap-1.5 text-sm text-stone-500">
+                          <CalendarDays
+                            className="h-4 w-4"
+                            aria-hidden="true"
+                          />
+                          {formatDate(item.createdAt, lang)}
+                        </span>
+                      </div>
 
-                <p className="mt-4 whitespace-pre-line leading-7 text-gray-700">
-                  {localize(item.content)}
-                </p>
+                      <h2 className="mt-5 text-2xl font-bold text-maroon-900">
+                        {title}
+                      </h2>
 
-                <p className="mt-4 text-sm text-gray-400">
-                  {new Date(item.createdAt).toLocaleDateString()}
-                </p>
-              </div>
-            ))}
+                      {summary && (
+                        <p className="mt-3 font-medium text-stone-700">
+                          {summary}
+                        </p>
+                      )}
+
+                      <p className="mt-4 leading-7 whitespace-pre-line text-stone-600">
+                        {localize(item.content, lang)}
+                      </p>
+                    </div>
+                  </article>
+                </Reveal>
+              );
+            })}
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 };

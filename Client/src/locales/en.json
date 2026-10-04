@@ -1,4 +1,10 @@
 {
+  "common": {
+    "menu": "Menu",
+    "backToTop": "Back to top",
+    "prevSlide": "Previous slide",
+    "nextSlide": "Next slide"
+  },
   "navbar": {
     "schoolName": "AMANDOLUWA MAHA VIDYALAYA",
     "home": "Home",
@@ -16,7 +22,10 @@
     "card2Title": "Discipline & Values",
     "card2Text": "We nurture respectful, disciplined, and responsible students with strong moral values.",
     "card3Title": "Student Development",
-    "card3Text": "We encourage creativity, leadership, teamwork, and personal growth in every student."
+    "card3Text": "We encourage creativity, leadership, teamwork, and personal growth in every student.",
+    "learnMore": "Learn more",
+    "latestTitle": "Latest Notifications",
+    "viewAll": "View all"
   },
   "vision": {
     "title": "Our Vision",
@@ -59,7 +68,8 @@
     "send": "Send Message",
     "success": "Thank you! Your message has been sent.",
     "sending": "Sending...",
-    "error": "Your message couldn't be sent. Please try again."
+    "error": "Your message couldn't be sent. Please try again.",
+    "subtitle": "We'd love to hear from you. Send us a message or visit the school office."
   },
   "notFound": {
     "title": "Page not found",

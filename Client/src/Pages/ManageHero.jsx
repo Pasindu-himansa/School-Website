@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import API from "../Services/api.js";
+import { Images, Pencil, Plus, Save, Trash2, X } from "lucide-react";
 
 const ManageHero = () => {
   const [slides, setSlides] = useState([]);
@@ -145,11 +146,14 @@ const ManageHero = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-blue-900">Manage Hero Slides</h2>
+      <h2 className="flex items-center gap-3 text-2xl font-bold text-maroon-900">
+        <Images className="h-7 w-7 text-maroon-700" aria-hidden="true" />
+        Manage Hero Slides
+      </h2>
 
       <form
         onSubmit={handleSubmit}
-        className="mt-6 grid gap-4 rounded-xl bg-white p-6 shadow-md"
+        className="mt-6 grid gap-4 rounded-2xl bg-white p-6 shadow-md ring-1 ring-stone-200/70"
       >
         <input
           type="text"
@@ -157,7 +161,7 @@ const ManageHero = () => {
           placeholder="Title (English)"
           value={form.title_en}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
           required
         />
         <input
@@ -166,7 +170,7 @@ const ManageHero = () => {
           placeholder="Title (Sinhala)"
           value={form.title_si}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
           required
         />
         <input
@@ -175,7 +179,7 @@ const ManageHero = () => {
           placeholder="Subtitle (English)"
           value={form.subtitle_en}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
         />
         <input
           type="text"
@@ -183,12 +187,12 @@ const ManageHero = () => {
           placeholder="Subtitle (Sinhala)"
           value={form.subtitle_si}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
         />
 
         {/* Image Upload */}
-        <div className="rounded-lg border p-3">
-          <label className="mb-2 block text-sm font-medium text-gray-700">
+        <div className="input">
+          <label className="mb-2 block text-sm font-medium text-stone-700">
             Hero Image {editingId && "(leave empty to keep current image)"}
           </label>
           <input
@@ -196,7 +200,7 @@ const ManageHero = () => {
             type="file"
             accept="image/jpeg,image/png,image/webp"
             onChange={handleImageChange}
-            className="w-full"
+            className="file-input w-full"
             required={!editingId}
           />
           {imagePreview && (
@@ -214,7 +218,7 @@ const ManageHero = () => {
           placeholder="Button Text (English)"
           value={form.buttonText_en}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
         />
         <input
           type="text"
@@ -222,7 +226,7 @@ const ManageHero = () => {
           placeholder="Button Text (Sinhala)"
           value={form.buttonText_si}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
         />
         <input
           type="text"
@@ -230,7 +234,7 @@ const ManageHero = () => {
           placeholder="Button Link"
           value={form.buttonLink}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
         />
         <input
           type="number"
@@ -240,7 +244,7 @@ const ManageHero = () => {
           placeholder="Order"
           value={form.order}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
         />
 
         <label className="flex items-center gap-2">
@@ -254,8 +258,13 @@ const ManageHero = () => {
         </label>
 
         <button
-          className={`rounded-lg py-3 font-semibold text-white ${editingId ? "bg-green-600" : "bg-blue-900"}`}
+          className={`inline-flex items-center justify-center gap-2 rounded-xl py-3 font-semibold text-white shadow transition hover:-translate-y-0.5 ${editingId ? "bg-green-700 hover:bg-green-600" : "bg-maroon-800 hover:bg-maroon-700"}`}
         >
+          {editingId ? (
+            <Save className="h-5 w-5" aria-hidden="true" />
+          ) : (
+            <Plus className="h-5 w-5" aria-hidden="true" />
+          )}
           {editingId ? "Update Slide" : "Add Slide"}
         </button>
 
@@ -263,8 +272,9 @@ const ManageHero = () => {
           <button
             type="button"
             onClick={resetForm}
-            className="rounded-lg bg-gray-400 py-2 text-white"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-stone-200 py-2.5 font-medium text-stone-700 transition hover:bg-stone-300"
           >
+            <X className="h-4 w-4" aria-hidden="true" />
             Cancel Edit
           </button>
         )}
@@ -272,16 +282,19 @@ const ManageHero = () => {
 
       <div className="mt-8 grid gap-4">
         {slides.map((slide) => (
-          <div key={slide._id} className="rounded-xl bg-white p-4 shadow">
+          <div
+            key={slide._id}
+            className="animate-fade-up rounded-2xl bg-white p-5 shadow-sm ring-1 ring-stone-200/70 transition hover:shadow-md"
+          >
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
-                <h3 className="font-bold text-blue-900">
+                <h3 className="font-bold text-maroon-900">
                   {slide.title?.en || "No English title"}
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-stone-600">
                   {slide.title?.si || "No Sinhala title"}
                 </p>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="mt-1 text-sm text-stone-500">
                   Order: {slide.order} |{" "}
                   {slide.isActive ? "Active" : "Inactive"}
                 </p>
@@ -289,14 +302,16 @@ const ManageHero = () => {
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEdit(slide)}
-                  className="rounded bg-yellow-500 px-4 py-2 text-white"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-gold-300 px-4 py-2 font-medium text-maroon-900 transition hover:bg-gold-200"
                 >
+                  <Pencil className="h-4 w-4" aria-hidden="true" />
                   Edit
                 </button>
                 <button
                   onClick={() => handleDelete(slide._id)}
-                  className="rounded bg-red-500 px-4 py-2 text-white"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-red-600 px-4 py-2 font-medium text-white transition hover:bg-red-700"
                 >
+                  <Trash2 className="h-4 w-4" aria-hidden="true" />
                   Delete
                 </button>
               </div>

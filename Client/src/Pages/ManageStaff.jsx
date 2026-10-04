@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import API from "../Services/api";
+import { Pencil, Plus, Save, Trash2, Users, X } from "lucide-react";
 
 const ManageStaff = () => {
   const [staff, setStaff] = useState([]);
@@ -132,11 +133,14 @@ const ManageStaff = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-blue-900">Manage Staff</h2>
+      <h2 className="flex items-center gap-3 text-2xl font-bold text-maroon-900">
+        <Users className="h-7 w-7 text-maroon-700" aria-hidden="true" />
+        Manage Staff
+      </h2>
 
       <form
         onSubmit={handleSubmit}
-        className="mt-6 grid gap-4 rounded-xl bg-white p-6 shadow-md"
+        className="mt-6 grid gap-4 rounded-2xl bg-white p-6 shadow-md ring-1 ring-stone-200/70"
       >
         <input
           type="text"
@@ -144,7 +148,7 @@ const ManageStaff = () => {
           placeholder="Name (English)"
           value={form.name_en}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
           required
         />
 
@@ -154,7 +158,7 @@ const ManageStaff = () => {
           placeholder="Name (Sinhala)"
           value={form.name_si}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
           required
         />
 
@@ -164,7 +168,7 @@ const ManageStaff = () => {
           placeholder="Position (English)"
           value={form.position_en}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
           required
         />
 
@@ -174,7 +178,7 @@ const ManageStaff = () => {
           placeholder="Position (Sinhala)"
           value={form.position_si}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
           required
         />
 
@@ -184,7 +188,7 @@ const ManageStaff = () => {
           name="photo"
           accept="image/jpeg,image/png,image/webp"
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input file-input"
         />
 
         <input
@@ -193,7 +197,7 @@ const ManageStaff = () => {
           placeholder="Email"
           value={form.email}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
         />
 
         <input
@@ -202,7 +206,7 @@ const ManageStaff = () => {
           placeholder="Phone"
           value={form.phone}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
         />
 
         <textarea
@@ -211,7 +215,7 @@ const ManageStaff = () => {
           value={form.bio_en}
           onChange={handleChange}
           rows="4"
-          className="rounded-lg border p-3"
+          className="input"
         />
 
         <textarea
@@ -220,7 +224,7 @@ const ManageStaff = () => {
           value={form.bio_si}
           onChange={handleChange}
           rows="4"
-          className="rounded-lg border p-3"
+          className="input"
         />
 
         <input
@@ -229,7 +233,7 @@ const ManageStaff = () => {
           placeholder="Order"
           value={form.order}
           onChange={handleChange}
-          className="rounded-lg border p-3"
+          className="input"
         />
 
         <label className="flex items-center gap-2">
@@ -243,10 +247,13 @@ const ManageStaff = () => {
         </label>
 
         <button
-          className={`rounded-lg py-3 font-semibold text-white ${
-            editingId ? "bg-green-600" : "bg-blue-900"
-          }`}
+          className={`inline-flex items-center justify-center gap-2 rounded-xl py-3 font-semibold text-white shadow transition hover:-translate-y-0.5 ${editingId ? "bg-green-700 hover:bg-green-600" : "bg-maroon-800 hover:bg-maroon-700"}`}
         >
+          {editingId ? (
+            <Save className="h-5 w-5" aria-hidden="true" />
+          ) : (
+            <Plus className="h-5 w-5" aria-hidden="true" />
+          )}
           {editingId ? "Update Staff" : "Add Staff Member"}
         </button>
 
@@ -254,8 +261,9 @@ const ManageStaff = () => {
           <button
             type="button"
             onClick={resetForm}
-            className="rounded-lg bg-gray-400 py-2 text-white"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-stone-200 py-2.5 font-medium text-stone-700 transition hover:bg-stone-300"
           >
+            <X className="h-4 w-4" aria-hidden="true" />
             Cancel Edit
           </button>
         )}
@@ -263,16 +271,19 @@ const ManageStaff = () => {
 
       <div className="mt-8 grid gap-4">
         {staff.map((member) => (
-          <div key={member._id} className="rounded-xl bg-white p-4 shadow">
+          <div
+            key={member._id}
+            className="animate-fade-up rounded-2xl bg-white p-5 shadow-sm ring-1 ring-stone-200/70 transition hover:shadow-md"
+          >
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
-                <h3 className="font-bold text-blue-900">
+                <h3 className="font-bold text-maroon-900">
                   {member.name?.en || "No English name"}
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-stone-600">
                   {member.name?.si || "No Sinhala name"}
                 </p>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="mt-1 text-sm text-stone-500">
                   {member.position?.en || ""} / {member.position?.si || ""}
                 </p>
               </div>
@@ -280,15 +291,17 @@ const ManageStaff = () => {
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEdit(member)}
-                  className="rounded bg-yellow-500 px-4 py-2 text-white cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-gold-300 px-4 py-2 font-medium text-maroon-900 transition hover:bg-gold-200"
                 >
+                  <Pencil className="h-4 w-4" aria-hidden="true" />
                   Edit
                 </button>
 
                 <button
                   onClick={() => handleDelete(member._id)}
-                  className="rounded bg-red-500 px-4 py-2 text-white cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-red-600 px-4 py-2 font-medium text-white transition hover:bg-red-700"
                 >
+                  <Trash2 className="h-4 w-4" aria-hidden="true" />
                   Delete
                 </button>
               </div>

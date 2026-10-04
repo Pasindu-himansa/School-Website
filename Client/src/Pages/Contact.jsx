@@ -1,6 +1,20 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import {
+  CircleAlert,
+  CircleCheck,
+  Clock,
+  LoaderCircle,
+  Mail,
+  MapPin,
+  MessageSquare,
+  Phone,
+  Send,
+  User,
+} from "lucide-react";
 import API from "../Services/api";
+import PageHeader from "../Components/PageHeader";
+import Reveal from "../Components/Reveal";
 
 const Contact = () => {
   const { t } = useTranslation();
@@ -37,120 +51,183 @@ const Contact = () => {
     }
   };
 
+  const infoItems = [
+    {
+      icon: MapPin,
+      label: t("contact.addressLabel"),
+      value: t("contact.address"),
+    },
+    {
+      icon: Phone,
+      label: t("contact.phoneLabel"),
+      value: t("contact.phone"),
+      href: `tel:${t("contact.phone").replace(/\s/g, "")}`,
+    },
+    {
+      icon: Mail,
+      label: t("contact.emailLabel"),
+      value: t("contact.email"),
+      href: `mailto:${t("contact.email")}`,
+    },
+    { icon: Clock, label: t("contact.hoursLabel"), value: t("contact.hours") },
+  ];
+
+  const fieldIcon =
+    "pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-stone-400";
+
   return (
-    <div className="bg-gray-50 py-16">
-      <div className="mx-auto max-w-6xl px-6">
-        <h1 className="mb-10 text-center text-4xl font-bold text-blue-900">
-          {t("contact.title")}
-        </h1>
+    <div>
+      <PageHeader
+        icon={Mail}
+        title={t("contact.title")}
+        subtitle={t("contact.subtitle")}
+      />
 
-        <div className="grid gap-10 md:grid-cols-2">
-          <div className="rounded-xl bg-white p-8 shadow-md">
-            <h2 className="mb-4 text-2xl font-semibold text-blue-900">
-              {t("contact.infoTitle")}
-            </h2>
+      <section className="mx-auto max-w-6xl px-6 py-16">
+        <div className="grid gap-8 lg:grid-cols-5">
+          <Reveal className="lg:col-span-2">
+            <div className="relative h-full overflow-hidden rounded-3xl bg-gradient-to-br from-maroon-800 to-maroon-950 p-8 text-white shadow-xl">
+              <div className="pointer-events-none absolute -right-16 -bottom-16 h-56 w-56 rounded-full bg-gold-300/15 blur-2xl" />
+              <h2 className="relative text-2xl font-bold">
+                {t("contact.infoTitle")}
+              </h2>
 
-            <div className="space-y-4 text-gray-700">
-              <p>
-                <strong>{t("contact.addressLabel")}:</strong>
-                <br />
-                {t("contact.address")}
-              </p>
-
-              <p>
-                <strong>{t("contact.phoneLabel")}:</strong>
-                <br />
-                {t("contact.phone")}
-              </p>
-
-              <p>
-                <strong>{t("contact.emailLabel")}:</strong>
-                <br />
-                {t("contact.email")}
-              </p>
-
-              <p>
-                <strong>{t("contact.hoursLabel")}:</strong>
-                <br />
-                {t("contact.hours")}
-              </p>
+              <ul className="relative mt-8 space-y-6">
+                {infoItems.map(({ icon: Icon, label, value, href }) => (
+                  <li key={label} className="flex gap-4">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gold-300 text-maroon-900">
+                      <Icon className="h-5 w-5" aria-hidden="true" />
+                    </span>
+                    <div>
+                      <p className="text-sm font-semibold text-gold-200">
+                        {label}
+                      </p>
+                      {href ? (
+                        <a
+                          href={href}
+                          className="mt-0.5 block text-maroon-50 transition hover:text-gold-300"
+                        >
+                          {value}
+                        </a>
+                      ) : (
+                        <p className="mt-0.5 text-maroon-50">{value}</p>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="rounded-xl bg-white p-8 shadow-md">
-            <h2 className="mb-4 text-2xl font-semibold text-blue-900">
-              {t("contact.formTitle")}
-            </h2>
+          <Reveal delay={150} className="lg:col-span-3">
+            <div className="h-full rounded-3xl bg-white p-8 shadow-xl ring-1 shadow-stone-900/5 ring-stone-200/70">
+              <h2 className="text-2xl font-bold text-maroon-900">
+                {t("contact.formTitle")}
+              </h2>
 
-            {status && (
-              <div
-                className={`mb-5 rounded-lg px-4 py-3 text-sm ${
-                  status === "success"
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-700"
-                }`}
-              >
-                {t(`contact.${status}`)}
-              </div>
-            )}
+              {status && (
+                <div
+                  role="status"
+                  className={`mt-6 flex animate-fade-up items-center gap-3 rounded-xl px-4 py-3 text-sm ${
+                    status === "success"
+                      ? "bg-green-50 text-green-800 ring-1 ring-green-200"
+                      : "bg-red-50 text-red-700 ring-1 ring-red-200"
+                  }`}
+                >
+                  {status === "success" ? (
+                    <CircleCheck
+                      className="h-5 w-5 shrink-0"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <CircleAlert
+                      className="h-5 w-5 shrink-0"
+                      aria-hidden="true"
+                    />
+                  )}
+                  {t(`contact.${status}`)}
+                </div>
+              )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700">
-                  {t("contact.name")}
+              <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-1.5 block text-sm font-semibold text-stone-700">
+                      {t("contact.name")}
+                    </span>
+                    <span className="relative block">
+                      <User className={fieldIcon} aria-hidden="true" />
+                      <input
+                        type="text"
+                        name="name"
+                        value={form.name}
+                        onChange={handleChange}
+                        required
+                        autoComplete="name"
+                        className="input pl-11"
+                      />
+                    </span>
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-1.5 block text-sm font-semibold text-stone-700">
+                      {t("contact.emailLabel")}
+                    </span>
+                    <span className="relative block">
+                      <Mail className={fieldIcon} aria-hidden="true" />
+                      <input
+                        type="email"
+                        name="email"
+                        value={form.email}
+                        onChange={handleChange}
+                        required
+                        autoComplete="email"
+                        className="input pl-11"
+                      />
+                    </span>
+                  </label>
+                </div>
+
+                <label className="block">
+                  <span className="mb-1.5 block text-sm font-semibold text-stone-700">
+                    {t("contact.message")}
+                  </span>
+                  <span className="relative block">
+                    <MessageSquare className={fieldIcon} aria-hidden="true" />
+                    <textarea
+                      name="message"
+                      rows="5"
+                      value={form.message}
+                      onChange={handleChange}
+                      required
+                      className="input resize-y pl-11"
+                    />
+                  </span>
                 </label>
 
-                <input
-                  type="text"
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  required
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700">
-                  {t("contact.emailLabel")}
-                </label>
-
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  required
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700">
-                  {t("contact.message")}
-                </label>
-
-                <textarea
-                  name="message"
-                  rows="4"
-                  value={form.message}
-                  onChange={handleChange}
-                  required
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-                ></textarea>
-              </div>
-
-              <button
-                type="submit"
-                disabled={sending}
-                className="w-full rounded-lg bg-blue-900 py-2 font-semibold text-white transition hover:bg-blue-800 disabled:opacity-70"
-              >
-                {sending ? t("contact.sending") : t("contact.send")}
-              </button>
-            </form>
-          </div>
+                <button
+                  type="submit"
+                  disabled={sending}
+                  className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-maroon-800 py-3.5 font-semibold text-white shadow-lg shadow-maroon-900/20 transition hover:-translate-y-0.5 hover:bg-maroon-700 disabled:translate-y-0 disabled:opacity-70 sm:w-auto sm:px-10"
+                >
+                  {sending ? (
+                    <LoaderCircle
+                      className="h-5 w-5 animate-spin"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <Send
+                      className="h-5 w-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                      aria-hidden="true"
+                    />
+                  )}
+                  {sending ? t("contact.sending") : t("contact.send")}
+                </button>
+              </form>
+            </div>
+          </Reveal>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

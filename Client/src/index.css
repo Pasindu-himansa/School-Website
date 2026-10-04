@@ -1,1 +1,218 @@
 @import "tailwindcss";
+
+@theme {
+  /* Latin text uses Inter / Playfair; Sinhala falls through to Noto */
+  --font-sans:
+    "Inter", "Noto Sans Sinhala", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Playfair Display", "Noto Serif Sinhala", Georgia, serif;
+
+  /* school crest colours */
+  --color-maroon-50: #fdf3f3;
+  --color-maroon-100: #fbe4e4;
+  --color-maroon-200: #f5cccc;
+  --color-maroon-300: #eca7a7;
+  --color-maroon-400: #df7575;
+  --color-maroon-500: #cc4a4a;
+  --color-maroon-600: #b02f2f;
+  --color-maroon-700: #922222;
+  --color-maroon-800: #7a0f0f;
+  --color-maroon-900: #640c0c;
+  --color-maroon-950: #3a0505;
+
+  --color-gold-50: #fdfbea;
+  --color-gold-100: #faf5c8;
+  --color-gold-200: #f4ea93;
+  --color-gold-300: #e8d866;
+  --color-gold-400: #dbc23b;
+  --color-gold-500: #c7a823;
+  --color-gold-600: #a5831a;
+  --color-gold-700: #836218;
+  --color-gold-800: #6c4e1a;
+  --color-gold-900: #5c411b;
+
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-in: fade-in 0.45s ease-out both;
+  --animate-slide-down: slide-down 0.25s ease-out both;
+  --animate-float: float 5s ease-in-out infinite;
+  --animate-ken-burns: ken-burns 9s ease-out both;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-down {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+
+  @keyframes ken-burns {
+    from {
+      transform: scale(1.12);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes shimmer {
+    from {
+      background-position: -200% 0;
+    }
+    to {
+      background-position: 200% 0;
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-stone-50 font-sans text-stone-700 antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-gold-400;
+  }
+
+  input[type="checkbox"] {
+    @apply h-4 w-4 cursor-pointer accent-maroon-800;
+  }
+}
+
+@layer components {
+  /* shared form fields (contact form, admin forms) */
+  .input {
+    @apply w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-stone-800 transition placeholder:text-stone-400 focus:border-maroon-500 focus:ring-4 focus:ring-maroon-100 focus:outline-none;
+  }
+
+  .file-input {
+    @apply cursor-pointer text-sm text-stone-600 file:mr-4 file:cursor-pointer file:rounded-lg file:border-0 file:bg-maroon-50 file:px-4 file:py-2 file:font-semibold file:text-maroon-800 file:transition hover:file:bg-maroon-100;
+  }
+
+  /* loading placeholder */
+  .skeleton {
+    @apply animate-shimmer rounded-xl bg-[length:200%_100%];
+    background-image: linear-gradient(
+      90deg,
+      #e7e5e4 25%,
+      #f5f5f4 50%,
+      #e7e5e4 75%
+    );
+  }
+}
+
+/* Scroll-in reveal (see Components/Reveal.jsx) */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hero: slow zoom on the active slide, staggered text entrance */
+.swiper-slide-active .hero-bg {
+  @apply animate-ken-burns;
+}
+
+.hero-text > * {
+  opacity: 0;
+}
+
+.swiper-slide-active .hero-text > * {
+  @apply animate-fade-up;
+}
+
+.swiper-slide-active .hero-text > *:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.swiper-slide-active .hero-text > *:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* Swiper pagination in school colours */
+.hero-swiper .swiper-pagination-bullet {
+  @apply h-2.5 w-2.5 bg-white opacity-60 transition-all;
+}
+
+.hero-swiper .swiper-pagination-bullet-active {
+  @apply w-8 rounded-full bg-gold-300 opacity-100;
+}
+
+/* printing shouldn't depend on what was scrolled into view */
+@media print {
+  .reveal,
+  .hero-text > * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal,
+  .hero-text > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
