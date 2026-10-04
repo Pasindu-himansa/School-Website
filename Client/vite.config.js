@@ -5,4 +5,10 @@ import tailwindcss from "@tailwindcss/vite";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  // fixed port so the backend's CORS setting (CLIENT_URL) always matches;
+  // 5173 is used by another project on this machine
+  server: {
+    port: 5174,
+    strictPort: true,
+  },
 });

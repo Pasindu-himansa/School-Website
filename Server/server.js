@@ -20,7 +20,7 @@ if (process.env.TRUST_PROXY) {
 
 // Only our own frontend may call the API. CLIENT_URL can list several
 // origins separated by commas.
-const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
+const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5174")
   .split(",")
   .map((origin) => origin.trim());
 
