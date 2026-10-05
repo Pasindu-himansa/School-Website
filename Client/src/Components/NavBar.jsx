@@ -77,7 +77,7 @@ const Navbar = () => {
           <img
             src={logo}
             alt=""
-            className="h-11 w-11 rounded-full ring-2 ring-gold-300/60 transition-shadow duration-300 group-hover:ring-gold-300 lg:h-12 lg:w-12"
+            className="h-11 w-11 rounded-full ring-2 ring-black lg:h-12 lg:w-12"
           />
           <span className="font-display text-base leading-tight font-bold tracking-wide sm:text-lg lg:text-xl">
             {t("navbar.schoolName")}
